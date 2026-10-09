@@ -1,39 +1,54 @@
-# Real-Time Pose Detection and Exercise Tracking
+# Real-Time Pose Detection & Exercise Tracking
 
-### Project Overview
-This project leverages MediaPipe and OpenCV to perform real-time pose detection and exercise tracking. The application detects human poses using a webcam feed and calculates the angle between specific body joints to track exercises, such as bicep curls. It visualizes the pose landmarks, calculates angles, and provides feedback on exercise performance, such as counting repetitions and detecting the exercise stage.
+A webcam-based computer vision notebook that detects body landmarks, calculates the left elbow angle, and counts bicep curls with MediaPipe, OpenCV, and NumPy.
 
-### Dependencies
-OpenCV: For video capture and image processing.
+[Portfolio](https://odra-bira.github.io/) · [Open notebook](notebooks/pose_tracking.ipynb)
 
-MediaPipe: For pose detection and landmark extraction.
+## Features
 
-NumPy: For mathematical operations.
+- Live webcam capture and skeleton overlay.
+- Shoulder–elbow–wrist angle calculation.
+- A two-state repetition counter: arm extension above 160° sets the down state; flexion below 30° then counts a repetition.
+- On-screen angle, repetition count, and movement stage.
 
+## Run locally
 
-To install the dependencies, use the following command:
-pip install mediapipe opencv-python numpy
+Use a computer with a webcam and a graphical desktop. Remote/headless notebook sessions cannot directly display the OpenCV windows or access your local camera.
 
-### Key Components
-1. Install and Import Dependencies
-The initial step involves installing and importing the necessary libraries.
+```bash
+git clone https://github.com/odra-bira/Real-Time-Pose-Detection-and-Exercise-Tracking-main.git
+cd Real-Time-Pose-Detection-and-Exercise-Tracking-main
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+jupyter notebook notebooks/pose_tracking.ipynb
+```
 
-2. Real-Time Video Feed
-A video feed is captured from the webcam and displayed using OpenCV's imshow function. The feed is shown in a window titled "Mediapipe Feed".
+On Windows, activate with `.venv\Scripts\activate`.
 
-3. Pose Detection
-MediaPipe's Pose model detects human pose landmarks in the video feed. The landmarks are then rendered on the video feed using MediaPipe’s drawing utilities.
+Run the notebook sequentially. Each camera-loop cell opens its own window; focus that window and press **q** to finish the cell before continuing. Allow camera access when prompted.
 
-4. Angle Calculation
-Angles between specific joints (e.g., shoulder, elbow, wrist) are calculated to analyze the exercise form. The angle is computed using the arctangent function and visualized on the video feed.
+The notebook uses the legacy `mediapipe.solutions.pose` API. Install a compatible MediaPipe release that exposes this API; the dependency file does not guarantee compatibility with every release.
 
-5. Curl Counter
-The application tracks the number of bicep curls performed. It determines the exercise stage (up or down) based on the angle between joints and updates the counter accordingly.
+## How counting works
 
+The angle at the elbow is computed from three 2D landmark coordinates. A repetition is recorded only after the arm moves from the extended state to the flexed state. Fixed thresholds make the logic easy to inspect, but do not measure exercise quality.
 
-### Usage
-Run the script to start the real-time pose detection and exercise tracking application. The application will display a video feed with pose landmarks and exercise metrics such as the number of repetitions and current stage of the exercise.
+## Repository guide
 
-### Contributions
-Feel free to contribute to the project by improving the pose detection accuracy, adding more exercise types, or optimizing the code. For any issues or suggestions, please open an issue in the repository.
+| Path | Purpose |
+| --- | --- |
+| `notebooks/pose_tracking.ipynb` | Step-by-step pose detection and curl counting |
+| `requirements.txt` | Direct dependencies |
+| `.gitignore` | Excludes generated notebook and environment files |
 
+## Limitations
+
+- Tracks the left arm with fixed thresholds.
+- Sensitive to camera placement, lighting, occlusion, and landmark quality.
+- Does not include a labeled benchmark or verified accuracy/FPS measurements.
+- Demonstrates pose estimation and counting, not medical or professional fitness assessment.
+
+## Author
+
+Odra Bira · [Portfolio](https://odra-bira.github.io/)

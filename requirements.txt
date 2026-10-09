@@ -1,0 +1,5 @@
+# Requires a MediaPipe version exposing mediapipe.solutions.pose.
+mediapipe
+opencv-python
+numpy
+jupyter
